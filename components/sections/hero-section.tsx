@@ -38,8 +38,10 @@ export function HeroSection() {
     };
   }, []);
 
-  // Text fades out first (0 to 0.2)
-  const textOpacity = Math.max(0, 1 - (scrollProgress / 0.2));
+  // Text + CTA fade out early (0 → ~20 % scrollu)
+  const textOpacity = Math.max(0, 1 - scrollProgress / 0.2);
+  // Tmavý overlay pri štarte; počas scrolu pomaly mizne (celý rozsah 0–1)
+  const darkOverlayFade = Math.max(0, 1 - scrollProgress);
   
   // Image transforms start after text fades (0.2 to 1)
   const imageProgress = Math.max(0, Math.min(1, (scrollProgress - 0.2) / 0.8));
@@ -116,26 +118,25 @@ export function HeroSection() {
                 priority
               />
               
-              {/* Overlay — pri štarte výraznejšie stmavenie, pri scrolli mizne ako doteraz (textOpacity) */}
+              {/* Tmavý overlay — silnejší pri štarte, pri scrolle pomaly mizne */}
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{ opacity: darkOverlayFade }}
+                aria-hidden
+              >
+                <div className="absolute inset-0 bg-black/58 md:bg-black/52" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/[0.97] via-black/[0.55] to-black/[0.12] md:from-black/[0.9] md:via-black/[0.45] md:to-black/[0.08]" />
+              </div>
+
+              {/* Nadpis + CTA — miznú skôr ako overlay */}
               <div
                 className="absolute inset-0 flex items-end justify-center overflow-hidden pb-8 md:items-center md:pb-0"
                 style={{ opacity: textOpacity }}
               >
-                <div
-                  className="pointer-events-none absolute inset-0 bg-black/45 md:bg-black/40"
-                  aria-hidden
-                />
-                <div
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/[0.94] via-black/[0.48] to-transparent md:from-black/[0.82] md:via-black/[0.38] md:to-transparent"
-                  aria-hidden
-                />
-                <div className="relative z-10 w-full max-w-4xl px-5 text-center md:px-8">
-                  <h1 className="text-balance text-3xl font-medium leading-[1.1] tracking-tight text-white md:text-5xl lg:text-6xl">
+                <div className="relative z-10 w-full max-w-4xl px-5 text-center md:max-w-5xl md:px-10 lg:max-w-6xl xl:max-w-7xl">
+                  <h1 className="text-balance text-3xl font-medium leading-[1.1] tracking-tight text-white md:text-5xl lg:text-6xl xl:text-[3.5rem] xl:leading-[1.08]">
                     Premeň obyčajnú fotku produktu na profi vizuál, ktorý predáva
                   </h1>
-                  <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-white/90 md:text-lg lg:text-xl">
-                    Z jednej fotky vytvorím prémiové produktové vizuály s perfektným svetlom, pozadím a atmosférou – bez štúdia, bez fotografa, bez stresu.
-                  </p>
                   <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
                     <Link
                       href="#contact"
@@ -144,9 +145,6 @@ export function HeroSection() {
                       Získať ukážku zdarma
                     </Link>
                   </div>
-                  <p className="mt-6 text-sm text-white/75 md:text-base">
-                    Stačí jedna obyčajná fotka produktu. O zvyšok sa postará AI a môj proces.
-                  </p>
                 </div>
               </div>
             </div>
